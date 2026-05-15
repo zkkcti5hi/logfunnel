@@ -1,0 +1,33 @@
+# logfunnel example configuration
+
+# Sources: log files to tail
+sources:
+  - name: app_server
+    path: /var/log/myapp/server.log
+  - name: worker
+    path: /var/log/myapp/worker.log
+
+# Sinks: destinations for matched log entries
+sinks:
+  - name: error_file
+    type: file
+    path: /var/log/logfunnel/errors.log
+
+  - name: warn_file
+    type: file
+    path: /var/log/logfunnel/warnings.log
+
+  - name: stdout_all
+    type: stdout
+
+# Rules: route log lines matching a pattern to a sink
+# Rules are evaluated in order; a line may match multiple rules.
+rules:
+  - pattern: "(?i)\\bERROR\\b"
+    sink: error_file
+
+  - pattern: "(?i)\\bWARN(ING)?\\b"
+    sink: warn_file
+
+  - pattern: ".*"
+    sink: stdout_all
